@@ -6,10 +6,13 @@
 # v0.1
 
 # TODO: prompt for interfaces & configure IP's based on a CSV and/or line-delimited list of IP's
+# TODO: functions & classes
+# TODO: implement writelines instead of several dozen .write statements. It's not scalable.
 
 # Imports
 import getpass
 import os
+from time import sleep
 
 # Variables
 device_count = ''
@@ -18,18 +21,14 @@ domain_name = ''
 modulus = 0
 username = ''
 secret = ''
-suffix = ''
+prefix = ''
 hostname = ''
-
-# Gather inputs
-device_count = input("Input the number of devices to configure: ") # Prompt for # of devices
-device_count = int(device_count)
-
-print("\n")
 
 # Present a menu to the user
 print("Cisco IOS Configuration Generator for Python 3.8")
 print("---------------------------------------------")
+device_count = int(input("Input the number of devices to configure: ")) # Prompt for # of devices
+sleep(1) # wait a second after input
 print("Select one of the following device types to configure: ")
 print("1: Router")
 print("2: Switch")
@@ -47,18 +46,19 @@ while device_type != "1" and device_type != "2" and device_type != "3" and devic
     else:
         break
 
+# Append a prefix based on device type; used for device configuration & filename scheme
 device_type = int(device_type)
 
 if device_type == 1:
-    suffix = 'R-'
+    prefix = 'R-'
 elif device_type == 2:
-    suffix = 'SW-'
+    prefix = 'SW-'
 elif device_type == 3:
-    suffix = 'FW-'
+    prefix = 'FW-'
 elif device_type == 4:
-    suffix = 'WLC-'
+    prefix = 'WLC-'
 elif device_type == 5:
-    suffix = 'UCS-'
+    prefix = 'UCS-'
 else:
     print("Invalid device type selected.")
 
@@ -72,18 +72,27 @@ while modulus < 30 or modulus > 4096:
         modulus = modulus
 
 #mgmt_IP = input("Enter the management IP of the Ansible server: ")
+
+# Input validation on secret to ensure it is typed correctly
 username = input("Enter the username to configure on each device: ")
 secret = getpass.getpass(prompt="Enter the secret password. The password will not be echoed here: ")
 secret2 = getpass.getpass(prompt="Enter password again, for verification: ")
 if secret == secret2:
-    print("Passwords were entered correctly.")
+    print("Passwords were entered correctly. Please note the secret will be in plaintext in the initial text file, but the IOS device will encrypt it when the command is sent to the device.")
 else:
-    print("Please verify secret string was entered correctly.")
+    print("Please verify secret string was entered correctly. Please note the secret will be in plaintext in the initial text file, but the IOS device will encrypt it when the command is sent to the device.")
+sleep(1)
+# One file for all configs
+# output = open('configuration.txt','w')
 
-output = open('configuration.txt','w')
+# Generate a separate directory for configurations and move into to it
+dir = os.getcwd()
+os.makedirs('config')
+cwd = os.chdir('./config')
 
-for i in range(1,device_count+1):
-    hostname = suffix + str(i)
+for device in range(1,device_count+1):
+    hostname = prefix + str(device)
+    output = open("%s.txt" % hostname, "wt")
     print("Writing configuration for device: " + " " + hostname)
     output.write("\n")
     output.write("Configuration for " + " " + hostname)
@@ -122,7 +131,10 @@ for i in range(1,device_count+1):
     output.write("\n")
     output.write("\n")
     output.write("\n")
-    i = i + 1
+    sleep(.1) # artificial delay to help user keep up with script output
+    device = device + 1
+    output.close() # Close the file handler
 
-output.close() # Close the file handler
-print("Device configuration has been successfully saved in filename \'configuration.txt\'")
+cwd = os.getcwd()
+sleep(.5)
+print("Configuration files have been successfully written to: ",cwd)
