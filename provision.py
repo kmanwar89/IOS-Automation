@@ -3,7 +3,7 @@
 # Language: Python 3.8
 # provision.py
 # 19 APR 2020
-# v0.4
+# v0.5
 
 # TODO: prompt for interfaces & configure IP's based on a CSV and/or line-delimited list of IP's
 # TODO: functions & classes
@@ -29,7 +29,7 @@ hostname = ''
 print("Cisco IOS Configuration Generator for Python 3.8")
 print("---------------------------------------------")
 device_count = int(input("Input the number of devices to configure: ")) # Prompt for # of devices
-sleep(1) # wait a second after input
+sleep(.5)
 print("Select one of the following device types to configure: ")
 print("1: Router")
 print("2: Switch")
@@ -66,7 +66,7 @@ else:
 domain_name = input("Enter the domain name: ")
 
 while modulus < 30 or modulus > 4096:
-    modulus = int(input("Enter the modulus key size to be used for generating RSA key [4096 recommended]: "))
+    modulus = int(input("Enter the modulus key size to be used for generating RSA key [4096 recommended]. Not all devices support 4096 bit modulus: "))
     if modulus < 30 or modulus > 4096 or modulus == "":
         print("Please enter a valid modulus key size")
     else:
@@ -110,7 +110,12 @@ for device in range(1,device_count+1):
     output.write("\n")
     output.write("ip domain-name" + " " + domain_name)
     output.write("\n")
-    output.write("crypto key generate rsa modulus" + " " + str(modulus))
+        # TODO: If the device is a legacy IOS device on 12.X code (such as a 3745) then there is
+        # a seperate prompt for 'crypto key generate rsa', after which it prompts for a modulus up # to 2048
+        # Fix: simply put the modulus on the next line after 'rsa'. This fixes it for 12.X code and # other devices I tested (IOU & IOSv)
+    output.write("crypto key generate rsa")
+    output.write("\n")
+    output.write(str(modulus))
     output.write("\n")
     output.write("line vty 0 4")
     output.write("\n")
