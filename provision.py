@@ -98,11 +98,9 @@ for device in range(1,device_count+1):
     hostname = prefix + str(device)
     output = open("%s.txt" % hostname, "wt")
     print("Writing configuration for device: " + " " + hostname)
+    output.write("! Configuration for " + " " + hostname) # added ! so these lines are treated as comments and the file can be copy/pasted directly, for ease of use
     output.write("\n")
-    output.write("!Configuration for " + " " + hostname) # added ! so these lines are treated as comments and the file can be copy/pasted directly, for ease of use
-    output.write("\n")
-    output.write("!-----------------------")
-    output.write("\n")
+    output.write("! -----------------------")
     output.write("en")
     output.write("\n")
     output.write("conf t")
