@@ -12,6 +12,7 @@
 # Imports
 import getpass
 import os
+from os import path
 from time import sleep
 
 # Variables
@@ -82,22 +83,25 @@ if secret == secret2:
 else:
     print("Please verify secret string was entered correctly. Please note the secret will be in plaintext in the initial text file, but the IOS device will encrypt it when the command is sent to the device.")
 sleep(1)
-# One file for all configs
-# output = open('configuration.txt','w')
 
 # Generate a separate directory for configurations and move into to it
 dir = os.getcwd()
-os.makedirs('config')
-cwd = os.chdir('./config')
+
+# Skip creating if the directory already exists
+if os.path.exists('./config') == True:
+    cwd = os.chdir('./config')
+else:
+    os.makedirs('config')
+    cwd = os.chdir('./config')
 
 for device in range(1,device_count+1):
     hostname = prefix + str(device)
     output = open("%s.txt" % hostname, "wt")
     print("Writing configuration for device: " + " " + hostname)
     output.write("\n")
-    output.write("Configuration for " + " " + hostname)
+    output.write("!Configuration for " + " " + hostname) # added ! so these lines are treated as comments and the file can be copy/pasted directly, for ease of use
     output.write("\n")
-    output.write("-----------------------")
+    output.write("!-----------------------")
     output.write("\n")
     output.write("en")
     output.write("\n")
