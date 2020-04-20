@@ -3,7 +3,7 @@
 # Language: Python 3.8
 # provision.py
 # 19 APR 2020
-# v0.3
+# v0.4
 
 # TODO: prompt for interfaces & configure IP's based on a CSV and/or line-delimited list of IP's
 # TODO: functions & classes
@@ -33,9 +33,9 @@ sleep(1) # wait a second after input
 print("Select one of the following device types to configure: ")
 print("1: Router")
 print("2: Switch")
-print("3: Firewall")
-print("4: WLC")
-print("5: UCS")
+#print("3: Firewall")
+#print("4: WLC")
+#print("5: UCS")
 
 # Input validation
 device_type = None
@@ -54,12 +54,12 @@ if device_type == 1:
     prefix = 'R-'
 elif device_type == 2:
     prefix = 'SW-'
-elif device_type == 3:
-    prefix = 'FW-'
-elif device_type == 4:
-    prefix = 'WLC-'
-elif device_type == 5:
-    prefix = 'UCS-'
+# elif device_type == 3:
+#     prefix = 'FW-'
+# elif device_type == 4:
+#     prefix = 'WLC-'
+# elif device_type == 5:
+#     prefix = 'UCS-'
 else:
     print("Invalid device type selected.")
 
@@ -101,6 +101,7 @@ for device in range(1,device_count+1):
     output.write("! Configuration for " + " " + hostname) # added ! so these lines are treated as comments and the file can be copy/pasted directly, for ease of use
     output.write("\n")
     output.write("! -----------------------")
+    output.write("\n")
     output.write("en")
     output.write("\n")
     output.write("conf t")
