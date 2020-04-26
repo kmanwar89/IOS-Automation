@@ -28,7 +28,7 @@ def main():
     user_menu()
 
     # Check for different device types and assign a prefix
-    device_check()
+    device_type,prefix = device_check()
 
     # Get device count from above menu
     device_count = int(input("Input the number of devices to configure: ")) # Prompt for # of devices
@@ -66,10 +66,9 @@ def user_menu():
     #print("5: UCS")
 
 def device_check():
-    global prefix
-
     # Input validation
     device_type = None
+    prefix = None
 
     while device_type != "1" and device_type != "2" and device_type != "3" and device_type != "4" and device_type != "5":
         device_type = input("Select a device type to configure: ")
