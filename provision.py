@@ -28,7 +28,7 @@ def main():
     user_menu()
 
     # Check for different device types and assign a prefix
-    device_type,prefix = device_check()
+    device_type, prefix = device_check()
 
     # Get device count from above menu
     device_count = int(input("Input the number of devices to configure: ")) # Prompt for # of devices
@@ -44,10 +44,10 @@ def main():
     # Gather username & secret info, including data validation
     get_user_info()
 
-    print("Prefix - main()", prefix)
+    #print("Prefix - main()", prefix)
 
     # Write output to a per-device configuration
-    write_output(device_count, prefix)
+    write_output(device_count, prefix, username, secret, domain_name)
 
     cwd = os.getcwd()
     sleep(.5)
@@ -61,6 +61,7 @@ def user_menu():
     print("Select one of the following device types to configure: ")
     print("1: Router")
     print("2: Switch")
+    # Placeholders for future functionality
     #print("3: Firewall")
     #print("4: WLC")
     #print("5: UCS")
@@ -80,6 +81,7 @@ def device_check():
     # Append a prefix based on device type; used for device configuration & filename scheme
     device_type = int(device_type)
 
+    # TODO: Implement this using a dictionary and .get() instead of if/elif
     if device_type == 1:
         prefix = 'R-'
     elif device_type == 2:
@@ -93,16 +95,16 @@ def device_check():
     else:
         print("Invalid device type selected.")
 
-    print("Prefix - device_check()", prefix)
+    # print("Prefix - device_check()", prefix)
 
     return device_type, prefix
 
 def get_inputs():
     
-
     domain_name = input("Enter the domain name: ")
 
-    return device_count, domain_name
+    # return device_count
+    return domain_name
 
 def modulus_check():
     modulus = 0
@@ -127,8 +129,9 @@ def get_user_info():
 
     return username,secret
     
-def write_output(device_count, prefix):
-    print("Prefix - write_output() ", prefix)
+# Expanded this function to include more arguments - fixing a bug where output wasn't correctly printing secret, username & domain_name
+def write_output(device_count, prefix, username, secret, domain_name):
+    #print("Prefix - write_output() ", prefix)
     # Generate a separate directory for configurations and move into to it
     os.getcwd()
 
@@ -173,7 +176,8 @@ def write_output(device_count, prefix):
 
         output.writelines(output_text)
 
-        # artificial delay to help user keep up with script output
+        # Artificial delay to help user keep up with script output. For large amount of devices, 
+        # introduce a brief delay.
         if device_count <30:
             sleep(.075)
         else:
